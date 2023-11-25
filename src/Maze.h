@@ -1,6 +1,6 @@
 enum Orientation {ORIENTATION_UP, ORIENTATION_RIGHT, ORIENTATION_DOWN, ORIENTATION_LEFT, UNKNOWN_ORIENTATION};
 
-#define napon 1    // 1-puna baterija  2-srednje puna baterija
+#define napon 3    // 1-puna baterija  2-srednje puna baterija   3-prosječna vrijednost
 #define arena 2    // 1-fiksna arena   2-mobilna arena  
 
 //Definicije nekih kratica u programu
@@ -16,6 +16,8 @@ enum Orientation {ORIENTATION_UP, ORIENTATION_RIGHT, ORIENTATION_DOWN, ORIENTATI
 #define TILE_LENGTH 30
 #define LEFT_MOTOR_FACTOR 0.90
 #define RIGHT_MOTOR_FACTOR 1.00
+#define DIFFERENCE_PITCH 10
+
 
 // arena
 #if ((arena == 1) && (napon == 1))
@@ -28,7 +30,16 @@ enum Orientation {ORIENTATION_UP, ORIENTATION_RIGHT, ORIENTATION_DOWN, ORIENTATI
     #define WHITE_RIGHT 450    // <
 #endif
 #if ((arena == 1) && (napon == 2))
-    #define ONE_TILE_ENCODER_STEPS 1200
+    #define ONE_TILE_ENCODER_STEPS 1100
+    #define BLACK_MIDLE 200    // <
+    #define BLACK_RIGHT 200    // <
+    #define SILVER_MIDLE 650   // >
+    #define SILVER_RIGHT 650   // >
+    #define WHITE_MIDLE 650    // >
+    #define WHITE_RIGHT 450    // <
+#endif
+#if ((arena == 1) && (napon == 3))
+    #define ONE_TILE_ENCODER_STEPS 1070
     #define BLACK_MIDLE 200    // <
     #define BLACK_RIGHT 200    // <
     #define SILVER_MIDLE 650   // >
@@ -49,6 +60,15 @@ enum Orientation {ORIENTATION_UP, ORIENTATION_RIGHT, ORIENTATION_DOWN, ORIENTATI
 #endif
 #if ((arena == 2) && (napon == 2))
     #define ONE_TILE_ENCODER_STEPS 1150
+    #define BLACK_MIDLE 350    // <
+    #define BLACK_RIGHT 250    // <
+    #define SILVER_MIDLE 625   // >
+    #define SILVER_RIGHT 625   // >
+    #define WHITE_MIDLE 600    // >
+    #define WHITE_RIGHT 450    // <
+#endif
+#if ((arena == 2) && (napon == 3))
+    #define ONE_TILE_ENCODER_STEPS 1040
     #define BLACK_MIDLE 350    // <
     #define BLACK_RIGHT 250    // <
     #define SILVER_MIDLE 625   // >
@@ -133,71 +153,143 @@ enum Orientation {ORIENTATION_UP, ORIENTATION_RIGHT, ORIENTATION_DOWN, ORIENTATI
 //napon ispod 12.1V
 #if napon == 2
     //front left
-    #define FRONT_LEFT_ANG1 0.851
-    #define FRONT_LEFT_MOV1 -204
-    #define FRONT_LEFT_LB 600
-    #define FRONT_LEFT_ANG2 0.943
-    #define FRONT_LEFT_MOV2 -258
+    #define FRONT_LEFT_ANG1 2.226
+    #define FRONT_LEFT_MOV1 -226
+    #define FRONT_LEFT_LB 240
+    #define FRONT_LEFT_ANG2 2.415
+    #define FRONT_LEFT_MOV2 -271
     //front middle
-    #define FRONT_MIDDLE_ANG1 0.943
-    #define FRONT_MIDDLE_MOV1 -268
-    #define FRONT_MIDDLE_LB 610
-    #define FRONT_MIDDLE_ANG2 0.83
-    #define FRONT_MIDDLE_MOV2 -198
+    #define FRONT_MIDDLE_ANG1 2.177
+    #define FRONT_MIDDLE_MOV1 -241
+    #define FRONT_MIDDLE_LB 250
+    #define FRONT_MIDDLE_ANG2 2.193
+    #define FRONT_MIDDLE_MOV2 -245
     //front right
-    #define FRONT_RIGHT_ANG1 0.9
-    #define FRONT_RIGHT_MOV1 -237
-    #define FRONT_RIGHT_LB 600
-    #define FRONT_RIGHT_ANG2 0.882
-    #define FRONT_RIGHT_MOV2 -226
+    #define FRONT_RIGHT_ANG1 2.22
+    #define FRONT_RIGHT_MOV1 -243
+    #define FRONT_RIGHT_LB 245
+    #define FRONT_RIGHT_ANG2 2.355
+    #define FRONT_RIGHT_MOV2 -276
     //left front
-    #define LEFT_FRONT_ANG1 0.833
-    #define LEFT_FRONT_MOV1 -204
-    #define LEFT_FRONT_LB 610
-    #define LEFT_FRONT_ANG2 1.01
-    #define LEFT_FRONT_MOV2 -311
+    #define LEFT_FRONT_ANG1 2.091
+    #define LEFT_FRONT_MOV1 -216
+    #define LEFT_FRONT_LB 250
+    #define LEFT_FRONT_ANG2 2.431
+    #define LEFT_FRONT_MOV2 -300
     //left middle
-    #define LEFT_MIDDLE_ANG1 0.86
-    #define LEFT_MIDDLE_MOV1 -211
-    #define LEFT_MIDDLE_LB 610
-    #define LEFT_MIDDLE_ANG2 0.84
-    #define LEFT_MIDDLE_MOV2 -200
+    #define LEFT_MIDDLE_ANG1 2.185
+    #define LEFT_MIDDLE_MOV1 -228
+    #define LEFT_MIDDLE_LB 245
+    #define LEFT_MIDDLE_ANG2 2.184
+    #define LEFT_MIDDLE_MOV2 -228
     //left back
-    #define LEFT_BACK_ANG1 0.8065
-    #define LEFT_BACK_MOV1 -309
-    #define LEFT_BACK_LB 760
-    #define LEFT_BACK_ANG2 1.24
-    #define LEFT_BACK_MOV2 -636
+    #define LEFT_BACK_ANG1 2.034
+    #define LEFT_BACK_MOV1 -239
+    #define LEFT_BACK_LB 265
+    #define LEFT_BACK_ANG2 3.456
+    #define LEFT_BACK_MOV2 -615
     //right front
-    #define RIGHT_FRONT_ANG1 1.111
-    #define RIGHT_FRONT_MOV1 -330
-    #define RIGHT_FRONT_LB 570
-    #define RIGHT_FRONT_ANG2 1.111
-    #define RIGHT_FRONT_MOV2 -330
+    #define RIGHT_FRONT_ANG1 2.855
+    #define RIGHT_FRONT_MOV1 -372
+    #define RIGHT_FRONT_LB 240
+    #define RIGHT_FRONT_ANG2 2.855
+    #define RIGHT_FRONT_MOV2 -372
     //right middle
-    #define RIGHT_MIDDLE_ANG1 0.897
-    #define RIGHT_MIDDLE_MOV1 -251
-    #define RIGHT_MIDDLE_LB 620
-    #define RIGHT_MIDDLE_ANG2 0.9375
-    #define RIGHT_MIDDLE_MOV2 -277
+    #define RIGHT_MIDDLE_ANG1 2.151
+    #define RIGHT_MIDDLE_MOV1 -245
+    #define RIGHT_MIDDLE_LB 255
+    #define RIGHT_MIDDLE_ANG2 2.416
+    #define RIGHT_MIDDLE_MOV2 -313
     //right back
-    #define RIGHT_BACK_ANG1 0.881
-    #define RIGHT_BACK_MOV1 -230
-    #define RIGHT_BACK_LB 610
-    #define RIGHT_BACK_ANG2 0.9434
-    #define RIGHT_BACK_MOV2 -267
+    #define RIGHT_BACK_ANG1 2.161
+    #define RIGHT_BACK_MOV1 -236
+    #define RIGHT_BACK_LB 250
+    #define RIGHT_BACK_ANG2 2.342
+    #define RIGHT_BACK_MOV2 -281
     //back left
-    #define BACK_LEFT_ANG1 0.8888
-    #define BACK_LEFT_MOV1 -253
-    #define BACK_LEFT_LB 630
-    #define BACK_LEFT_ANG2 0.9375
-    #define BACK_LEFT_MOV2 -283
+    #define BACK_LEFT_ANG1 2.343
+    #define BACK_LEFT_MOV1 -322
+    #define BACK_LEFT_LB 270
+    #define BACK_LEFT_ANG2 2.415
+    #define BACK_LEFT_MOV2 -342
     //back right
-    #define BACK_RIGHT_ANG1 0.897
-    #define BACK_RIGHT_MOV1 -247
-    #define BACK_RIGHT_LB 620
-    #define BACK_RIGHT_ANG2 1.0345
-    #define BACK_RIGHT_MOV2 -331
+    #define BACK_RIGHT_ANG1 2.454
+    #define BACK_RIGHT_MOV1 -292
+    #define BACK_RIGHT_LB 245
+    #define BACK_RIGHT_ANG2 2.57
+    #define BACK_RIGHT_MOV2 -320
+
+    #define FRONT_NEAR_DISTANCE 5.0
+#endif
+
+// prosječne vrijednosti napona
+#if napon == 3
+    //front left
+    #define FRONT_LEFT_ANG1 2.219
+    #define FRONT_LEFT_MOV1 -203
+    #define FRONT_LEFT_LB 230
+    #define FRONT_LEFT_ANG2 2.364
+    #define FRONT_LEFT_MOV2 -236
+    //front middle
+    #define FRONT_MIDDLE_ANG1 2.183
+    #define FRONT_MIDDLE_MOV1 -208
+    #define FRONT_MIDDLE_LB 235
+    #define FRONT_MIDDLE_ANG2 2.151
+    #define FRONT_MIDDLE_MOV2 -201
+    //front right
+    #define FRONT_RIGHT_ANG1 2.232
+    #define FRONT_RIGHT_MOV1 -210
+    #define FRONT_RIGHT_LB 230
+    #define FRONT_RIGHT_ANG2 2.324
+    #define FRONT_RIGHT_MOV2 -232
+    //left front
+    #define LEFT_FRONT_ANG1 2.12
+    #define LEFT_FRONT_MOV1 -182
+    #define LEFT_FRONT_LB 230
+    #define LEFT_FRONT_ANG2 2.701
+    #define LEFT_FRONT_MOV2 -313
+    //left middle
+    #define LEFT_MIDDLE_ANG1 2.18
+    #define LEFT_MIDDLE_MOV1 -185
+    #define LEFT_MIDDLE_LB 225
+    #define LEFT_MIDDLE_ANG2 2.158
+    #define LEFT_MIDDLE_MOV2 -180
+    //left back
+    #define LEFT_BACK_ANG1 2.155
+    #define LEFT_BACK_MOV1 -218
+    #define LEFT_BACK_LB 245
+    #define LEFT_BACK_ANG2 3.055
+    #define LEFT_BACK_MOV2 -434
+    //right front
+    #define RIGHT_FRONT_ANG1 2.675
+    #define RIGHT_FRONT_MOV1 -292
+    #define RIGHT_FRONT_LB 225
+    #define RIGHT_FRONT_ANG2 2.675
+    #define RIGHT_FRONT_MOV2 -292
+    //right middle
+    #define RIGHT_MIDDLE_ANG1 2.177
+    #define RIGHT_MIDDLE_MOV1 -215
+    #define RIGHT_MIDDLE_LB 240
+    #define RIGHT_MIDDLE_ANG2 2.342
+    #define RIGHT_MIDDLE_MOV2 -254
+    //right back
+    #define RIGHT_BACK_ANG1 2.099
+    #define RIGHT_BACK_MOV1 -187
+    #define RIGHT_BACK_LB 235
+    #define RIGHT_BACK_ANG2 2.391
+    #define RIGHT_BACK_MOV2 -254
+    //back left
+    #define BACK_LEFT_ANG1 2.341
+    #define BACK_LEFT_MOV1 -269
+    #define BACK_LEFT_LB 245
+    #define BACK_LEFT_ANG2 2.29
+    #define BACK_LEFT_MOV2 -256
+    //back right
+    #define BACK_RIGHT_ANG1 2.338
+    #define BACK_RIGHT_MOV1 -232
+    #define BACK_RIGHT_LB 230
+    #define BACK_RIGHT_ANG2 2.556
+    #define BACK_RIGHT_MOV2 -281
 
     #define FRONT_NEAR_DISTANCE 5.0
 #endif
@@ -524,6 +616,11 @@ class Robot {
         int followingType();
         void followToNextTyle(int fType, float startCompass);
         void tileSignal (char Signal);
+        float currentTemperatureL ();
+        float currentTemperatureR ();
+        float compassPitch();
+        void slopeUp();
+        void slopeDown();
 
         void testSensors();
 
