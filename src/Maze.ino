@@ -817,6 +817,21 @@ int Robot::goAheadOneTile(){
             if (robot.isWallFrontNear()) {
                 break;
             }
+            if (robot.WallFrontDistance() < 12.0){
+                if (!robot.isWallFront()){
+                    robot.followToNextTyle(folowProcedureType, startingHeading);
+                    robot.pauza(1);
+                    if (state_tip1 == 0)
+                        return;
+                }
+                else{
+                    encoders.reset();
+                    while ((encoders.counter(0) / LEFT_MOTOR_FACTOR) < 120 && ((encoders.counter(1) / RIGHT_MOTOR_FACTOR ) < 120)) {
+                        motors.go(LEFT_MOTOR_FACTOR * 45, RIGHT_MOTOR_FACTOR * 45); 
+                    }
+                    break;
+                }
+            }
         }
     }
     else{
@@ -829,8 +844,8 @@ int Robot::goAheadOneTile(){
                     robot.pauza (400);
                     break;
                 }
-            if (state_tip1 == 0)
-                return;
+                if (state_tip1 == 0)
+                    return;
             }
             else{
                 encoders.reset();
