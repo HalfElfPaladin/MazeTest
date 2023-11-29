@@ -315,8 +315,10 @@ enum Orientation {ORIENTATION_UP, ORIENTATION_RIGHT, ORIENTATION_DOWN, ORIENTATI
     #define THERMAL_LEVEL 400
 #endif
 
-// stabilizirani napon 11.5V
+// stabilizirani napon 9V
 #if napon == 4
+    // korekcija
+    #define LIDAR_READ_CORRECT 25.0
     //front left
     #define FRONT_LEFT_ANG1 2.124
     #define FRONT_LEFT_MOV1 -70
@@ -709,6 +711,7 @@ class Robot {
         float colorBlue();
         float colorViolet();
         void StartStop();
+        void Init();
         int followingType();
         void followToNextTyle(int fType, float startCompass);
         void tileSignal (char Signal);

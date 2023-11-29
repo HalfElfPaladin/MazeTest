@@ -36,6 +36,7 @@ const int imuRst=34;
 const int colRst=33;
 
 int state_tip1=0;
+int state_tip2=0;
 
 int csb=0;
 
@@ -44,8 +45,10 @@ float startPitch=0;
 void setup() {
 	robot.setupHardware();
 }
+
 void loop() {
     robot.StartStop ();
+    robot.Init();
     robot.program();
 }
 
@@ -395,24 +398,23 @@ void testEncoders () {
 
 void Robot::testSensors() {
     testLidars();
-//    testIRDistSensors();
-//    testIRLineSensors();
-//    testMotors();
-//    testEncoders();
-//    testCompass();
-//    testColor();
-//    testThermal();
-//    testTipLed();
+    testLidarsRead10();
+    testIRDistSensors();
+    testIRLineSensors();
+    testMotors();
+    testEncoders();
+    testCompass();
+    testColor();
+    testThermal();
+    testTipLed();
     Serial.println(" ");
     Serial.println("Everythig is OK!");
     Serial.println(" ");
-    robot.pauza(1000);
-    if (state_tip1 == 0)
-        return;
+    delay(1000);
 }
 
 float Robot::distanceFrontLeft() {
-    float lidarValue = lidars.distance(0);
+    float lidarValue = lidars.distance(0) + LIDAR_READ_CORRECT;
     float retValue;
     if (lidarValue < FRONT_LEFT_LB){ 
         retValue = ((lidarValue * FRONT_LEFT_ANG1) + FRONT_LEFT_MOV1) / 10.0;
@@ -424,7 +426,7 @@ float Robot::distanceFrontLeft() {
 }
 
 float Robot::distanceFrontMiddle() {
-    float lidarValue = lidars.distance(1);
+    float lidarValue = lidars.distance(1) + LIDAR_READ_CORRECT;
     float retValue;
     if (lidarValue < FRONT_MIDDLE_LB){ 
         retValue = ((lidarValue * FRONT_MIDDLE_ANG1) + FRONT_MIDDLE_MOV1) / 10.0;
@@ -436,7 +438,7 @@ float Robot::distanceFrontMiddle() {
 }
 
 float Robot::distanceFrontRight() {
-    float lidarValue = lidars.distance(2);
+    float lidarValue = lidars.distance(2) + LIDAR_READ_CORRECT;
     float retValue;
     if (lidarValue < FRONT_RIGHT_LB){ 
         retValue = ((lidarValue * FRONT_RIGHT_ANG1) + FRONT_RIGHT_MOV1) / 10.0;
@@ -448,7 +450,7 @@ float Robot::distanceFrontRight() {
 }
 
 float Robot::distanceRightFront() {
-    float lidarValue = lidars.distance(3);
+    float lidarValue = lidars.distance(3) + LIDAR_READ_CORRECT;
     float retValue;
     if (lidarValue < RIGHT_FRONT_LB){ 
         retValue = ((lidarValue * RIGHT_FRONT_ANG1) + RIGHT_FRONT_MOV1) / 10.0;
@@ -460,7 +462,7 @@ float Robot::distanceRightFront() {
 }
 
 float Robot::distanceRightMiddle() {
-    float lidarValue = lidars.distance(4);
+    float lidarValue = lidars.distance(4) + LIDAR_READ_CORRECT;
     float retValue;
     if (lidarValue < RIGHT_MIDDLE_LB){ 
         retValue = ((lidarValue * RIGHT_MIDDLE_ANG1) + RIGHT_MIDDLE_MOV1) / 10.0;
@@ -472,7 +474,7 @@ float Robot::distanceRightMiddle() {
 }
 
 float Robot::distanceRightBack() {
-    float lidarValue = lidars.distance(5);
+    float lidarValue = lidars.distance(5) + LIDAR_READ_CORRECT;
     float retValue;
     if (lidarValue < RIGHT_BACK_LB){ 
         retValue = ((lidarValue * RIGHT_BACK_ANG1) + RIGHT_BACK_MOV1) / 10.0;
@@ -484,7 +486,7 @@ float Robot::distanceRightBack() {
 }
 
 float Robot::distanceBackRight() {
-    float lidarValue = lidars.distance(6);
+    float lidarValue = lidars.distance(6) + LIDAR_READ_CORRECT;
     float retValue;
     if (lidarValue < BACK_RIGHT_LB){ 
         retValue = ((lidarValue * BACK_RIGHT_ANG1) + BACK_RIGHT_MOV1) / 10.0;
@@ -496,7 +498,7 @@ float Robot::distanceBackRight() {
 }
 
 float Robot::distanceBackLeft() {
-    float lidarValue = lidars.distance(7);
+    float lidarValue = lidars.distance(7) + LIDAR_READ_CORRECT;
     float retValue;
     if (lidarValue < BACK_LEFT_LB){ 
         retValue = ((lidarValue * BACK_LEFT_ANG1) + BACK_LEFT_MOV1) / 10.0;
@@ -508,7 +510,7 @@ float Robot::distanceBackLeft() {
 }
 
 float Robot::distanceLeftFront() {
-    float lidarValue = lidars.distance(10);
+    float lidarValue = lidars.distance(10) + LIDAR_READ_CORRECT;
     float retValue;
     if (lidarValue < LEFT_FRONT_LB){ 
         retValue = ((lidarValue * LEFT_FRONT_ANG1) + LEFT_FRONT_MOV1) / 10.0;
@@ -520,7 +522,7 @@ float Robot::distanceLeftFront() {
 }
 
 float Robot::distanceLeftMiddle() {
-    float lidarValue = lidars.distance(9);
+    float lidarValue = lidars.distance(9) + LIDAR_READ_CORRECT;
     float retValue;
     if (lidarValue < LEFT_MIDDLE_LB){ 
         retValue = ((lidarValue * LEFT_MIDDLE_ANG1) + LEFT_MIDDLE_MOV1) / 10.0;
@@ -532,7 +534,7 @@ float Robot::distanceLeftMiddle() {
 }
 
 float Robot::distanceLeftBack() {
-    float lidarValue = lidars.distance(8);
+    float lidarValue = lidars.distance(8) + LIDAR_READ_CORRECT;
     float retValue;
     if (lidarValue < LEFT_BACK_LB){ 
         retValue = ((lidarValue * LEFT_BACK_ANG1) + LEFT_BACK_MOV1) / 10.0;
@@ -569,7 +571,7 @@ float Robot::colorViolet() {
 
 
 float Robot::compassHeading(){
-    robot.pauza (10);
+    this->pauza (10);
     return compass.heading();
     
 }
@@ -583,7 +585,7 @@ float Robot::currentTemperatureR(){
 }
 
 float Robot::compassPitch(){
-    robot.pauza(10);
+    this->pauza(10);
     return compass.pitch();
 }
 
@@ -642,6 +644,7 @@ void Robot::StartStop () {
     if (dR(tip1) ==1) {
         if (state_tip1 ==0) {
             state_tip1 = 1;
+            state_tip2 = 0;
             delay (500);
         }
         else {
@@ -651,8 +654,24 @@ void Robot::StartStop () {
     }
 }
 
+void Robot::Init () {
+    if (dR(tip2) ==1) {
+        if (state_tip2 == 0) {
+            state_tip2 = 1;
+            delay (500);
+        }
+        else {
+            state_tip2 = 0;
+            delay (500);
+        }
+    }
+}
+
 void Robot::stop() {
     motors.go(0,0);
+    dW(led1,LOW);
+    dW(led2,LOW);
+    dW(led3,LOW);
 }
 
 void Robot::pauza (int duljina){
@@ -667,9 +686,9 @@ void Robot::pauza (int duljina){
 }
 
 int Robot::followingType(){
-    if (robot.isWallRight())
+    if (this->isWallRight())
         return 1;
-    else if (robot.isWallLeft())
+    else if (this->isWallLeft())
         return 2;
     else
         return 3;
@@ -679,33 +698,30 @@ void Robot::followToNextTyle(int fType, float startCompass){
     switch (fType)
     {
     case 1 :
-        robot.followRightLidars(startCompass);
+        this->followRightLidars(startCompass);
         break;
     case 2 :
-        robot.followLeftLidars(startCompass);
+        this->followLeftLidars(startCompass);
         break;
     case 3 :
-        robot.followIMU(startCompass);
+        this->followIMU(startCompass);
         break;  
     default:
         break;
     }
 }
 void Robot::slopeUp(){
-    while (robot.compassPitch()*(-1)-startPitch>DIFFERENCE_PITCH) {
+    while (this->compassPitch()*(-1)-startPitch>DIFFERENCE_PITCH) {
         motors.go(95*LEFT_MOTOR_FACTOR,95*RIGHT_MOTOR_FACTOR);
-        robot.pauza(1);
+        this->pauza(1);
     }
-//    dW(led1, HIGH);
-//    robot.stop();
-//    pauza (1000);
 }
 
 void Robot::blackTileBack(){
     float povrat;
 
     motors.go (0,0);
-    robot.pauza(250);
+    this->pauza(250);
     if (state_tip1 == 0)
         return;
     if (encoders.counter(1) < 150)
@@ -714,22 +730,22 @@ void Robot::blackTileBack(){
         povrat = encoders.counter(1) * 1.95;
     else
         povrat = encoders.counter(1) * 1.7;
-    while ((encoders.counter(1) < povrat) && !((robot.distanceBackLeft()<=8 && robot.distanceBackRight()<=8))) {
+    while ((encoders.counter(1) < povrat) && !((this->distanceBackLeft()<=8 && this->distanceBackRight()<=8))) {
         motors.go(-LEFT_MOTOR_FACTOR * 50, -RIGHT_MOTOR_FACTOR * 50); 
     }
     motors.go (0,0);
-    robot.pauza(250);
-    robot.turn90Degrees(true);
-    robot.pauza(250);
+    this->pauza(250);
+    this->turn90Degrees(true);
+    this->pauza(250);
     if (state_tip1 == 0)
         return;
-    while (robot.isWallFront()){
-        robot.turn90Degrees(true);
-        robot.pauza(250);
+    while (this->isWallFront()){
+        this->turn90Degrees(true);
+        this->pauza(250);
         if (state_tip1 == 0)
             return;
     }
-    robot.goAheadOneTile();
+    this->goAheadOneTile();
 }
 
 void moveLeft(){
@@ -779,7 +795,7 @@ void moveRight(){
 bool Robot::checkHeatedVictim(){
     if ((aR(termL) > THERMAL_LEVEL) || (aR(termD) > THERMAL_LEVEL)){
         motors.go(0,0);
-        robot.tileSignal('B');
+        this->tileSignal('B');
         return true;
     }
     else
@@ -798,29 +814,29 @@ int Robot::goAheadOneTile(){
     encoders.reset();
     if (frontDistanceStart > 50.0) {
         while ((encoders.counter(0) / LEFT_MOTOR_FACTOR) < (ONE_TILE_ENCODER_STEPS-encoderState) && ((encoders.counter(1) / RIGHT_MOTOR_FACTOR ) < (ONE_TILE_ENCODER_STEPS-encoderState))) {
-            robot.followToNextTyle(folowProcedureType, startingHeading);
-            robot.pauza(1);
-            if (robot.compassPitch()*(-1)-startPitch>DIFFERENCE_PITCH) {
-                robot.slopeUp();
-                robot.pauza (400);
+            this->followToNextTyle(folowProcedureType, startingHeading);
+            this->pauza(1);
+            if (this->compassPitch()*(-1)-startPitch>DIFFERENCE_PITCH) {
+                this->slopeUp();
+                this->pauza (400);
                 break;
             }
             if (state_tip1 == 0)
                 return;
             if ((heatedVictimDetected == false) && (encoders.counter(0) > 200)) {
-                heatedVictimDetected = robot.checkHeatedVictim();
+                heatedVictimDetected = this->checkHeatedVictim();
             }
             if (crnosrebrnobijelo()==1) {
-                robot.blackTileBack();
+                this->blackTileBack();
                 break;
             }
-            if (robot.isWallFrontNear()) {
+            if (this->isWallFrontNear()) {
                 break;
             }
-            if (robot.WallFrontDistance() < 12.0){
-                if (!robot.isWallFront()){
-                    robot.followToNextTyle(folowProcedureType, startingHeading);
-                    robot.pauza(1);
+            if (this->WallFrontDistance() < 12.0){
+                if (!this->isWallFront()){
+                    this->followToNextTyle(folowProcedureType, startingHeading);
+                    this->pauza(1);
                     if (state_tip1 == 0)
                         return;
                 }
@@ -835,13 +851,13 @@ int Robot::goAheadOneTile(){
         }
     }
     else{
-        while (robot.distanceFrontLeft() > FRONT_NEAR_DISTANCE) {
-            if (!robot.isWallFront()){
-                robot.followToNextTyle(folowProcedureType, startingHeading);
-                robot.pauza(1);
-                if (robot.compassPitch()*(-1)-startPitch>DIFFERENCE_PITCH) {
-                    robot.slopeUp();
-                    robot.pauza (400);
+        while (this->distanceFrontLeft() > FRONT_NEAR_DISTANCE) {
+            if (!this->isWallFront()){
+                this->followToNextTyle(folowProcedureType, startingHeading);
+                this->pauza(1);
+                if (this->compassPitch()*(-1)-startPitch>DIFFERENCE_PITCH) {
+                    this->slopeUp();
+                    this->pauza (400);
                     break;
                 }
                 if (state_tip1 == 0)
@@ -856,26 +872,26 @@ int Robot::goAheadOneTile(){
             }
             if (((encoders.counter(0) / LEFT_MOTOR_FACTOR) > (ONE_TILE_ENCODER_STEPS * 1.3)) || ((encoders.counter(1) / RIGHT_MOTOR_FACTOR ) > (ONE_TILE_ENCODER_STEPS * 1.3)))
                 break;
-            robot.pauza(1);
+            this->pauza(1);
             if (state_tip1 == 0)
                 return;
             if ((heatedVictimDetected == false) && (encoders.counter(0) > 200)) {
-                heatedVictimDetected = robot.checkHeatedVictim();
+                heatedVictimDetected = this->checkHeatedVictim();
             }
             if (crnosrebrnobijelo()==1) {
-                robot.blackTileBack();
+                this->blackTileBack();
                 break;
             }
-            if (robot.isWallFrontNear())
+            if (this->isWallFrontNear())
                 break;
         }
     }
     this->stop();
-    robot.pauza(250);
-    TileColor = robot.colorDetection();
+    this->pauza(250);
+    TileColor = this->colorDetection();
     if (state_tip1 == 0)
         return;
-    robot.tileSignal(TileColor);
+    this->tileSignal(TileColor);
     if (state_tip1 == 0)
         return;
     if (state_tip1 == 0)
@@ -884,40 +900,40 @@ int Robot::goAheadOneTile(){
 }
 
 void Robot::followRightLidars (float startCompass) {
-    if (robot.distanceRightFront() > 15.0) {
-        if (robot.distanceLeftBack() < 15.0)
-            robot.followLeftLidars(startCompass);
+    if (this->distanceRightFront() > 15.0) {
+        if (this->distanceLeftBack() < 15.0)
+            this->followLeftLidars(startCompass);
         else
-            robot.followIMU(startCompass);
+            this->followIMU(startCompass);
     }
-    else if (robot.distanceLeftMiddle()<5){
+    else if (this->distanceLeftMiddle()<5){
         motors.go (LEFT_MOTOR_FACTOR * 90,  RIGHT_MOTOR_FACTOR * 50);
     }
-    else if (robot.distanceRightFront() > 10.0) {
-        if ((robot.distanceRightBack()-robot.distanceRightFront()) < 0.0) {
+    else if (this->distanceRightFront() > 10.0) {
+        if ((this->distanceRightBack()-this->distanceRightFront()) < 0.0) {
             motors.go (LEFT_MOTOR_FACTOR * 80,  RIGHT_MOTOR_FACTOR * 50);
         }
-        else if ((robot.distanceRightBack()-robot.distanceRightFront()) > 2.0) {
+        else if ((this->distanceRightBack()-this->distanceRightFront()) > 2.0) {
             motors.go (LEFT_MOTOR_FACTOR * 50,  RIGHT_MOTOR_FACTOR * 90);
         }
-        else if ((robot.distanceRightBack()-robot.distanceRightFront()) > 1.0) {
+        else if ((this->distanceRightBack()-this->distanceRightFront()) > 1.0) {
             motors.go (LEFT_MOTOR_FACTOR * 60,  RIGHT_MOTOR_FACTOR * 80);
         }
         else{
             motors.go (LEFT_MOTOR_FACTOR * 70,  RIGHT_MOTOR_FACTOR * 70);
         }
     }
-    else if (robot.distanceRightFront() < 8.0 ) {
-            if (robot.distanceRightMiddle() < 6.0) {
+    else if (this->distanceRightFront() < 8.0 ) {
+            if (this->distanceRightMiddle() < 6.0) {
                 motors.go (LEFT_MOTOR_FACTOR * 50,  RIGHT_MOTOR_FACTOR * 80);
             }
-            else if ((robot.distanceRightFront()-robot.distanceRightBack()) < 0.0) {
+            else if ((this->distanceRightFront()-this->distanceRightBack()) < 0.0) {
                 motors.go (LEFT_MOTOR_FACTOR * 50,  RIGHT_MOTOR_FACTOR * 80);
             }
-            else if ((robot.distanceRightFront()-robot.distanceRightBack()) > 2.0) {
+            else if ((this->distanceRightFront()-this->distanceRightBack()) > 2.0) {
                 motors.go (LEFT_MOTOR_FACTOR * 90,  RIGHT_MOTOR_FACTOR * 50);
             }
-            else if ((robot.distanceRightFront()-robot.distanceRightBack()) > 1.0) {
+            else if ((this->distanceRightFront()-this->distanceRightBack()) > 1.0) {
                 motors.go (LEFT_MOTOR_FACTOR * 80,  RIGHT_MOTOR_FACTOR * 60);
             }
             else{
@@ -930,34 +946,34 @@ void Robot::followRightLidars (float startCompass) {
 }
 
 void Robot::followLeftLidars (float startCompass) {
-    if ((robot.distanceLeftFront() > 20.0) || (abs(robot.distanceLeftBack()-robot.distanceLeftFront()) > 3)) {
-        if (robot.distanceRightBack() < 15.0)
-            robot.followRightLidars(startCompass);
+    if ((this->distanceLeftFront() > 20.0) || (abs(this->distanceLeftBack()-this->distanceLeftFront()) > 3)) {
+        if (this->distanceRightBack() < 15.0)
+            this->followRightLidars(startCompass);
         else
-            robot.followIMU(startCompass);
+            this->followIMU(startCompass);
     }
-    else if (robot.distanceLeftFront() > 10.0) {
-        if ((robot.distanceLeftBack()-robot.distanceLeftFront()) < 0.0) {
+    else if (this->distanceLeftFront() > 10.0) {
+        if ((this->distanceLeftBack()-this->distanceLeftFront()) < 0.0) {
             motors.go (LEFT_MOTOR_FACTOR * 50,  RIGHT_MOTOR_FACTOR * 80);
         }
-        else if ((robot.distanceLeftBack()-robot.distanceLeftFront()) > 2.0) {
+        else if ((this->distanceLeftBack()-this->distanceLeftFront()) > 2.0) {
             motors.go (LEFT_MOTOR_FACTOR * 80,  RIGHT_MOTOR_FACTOR * 60);
         }
-        else if ((robot.distanceLeftBack()-robot.distanceLeftFront()) > 1.0) {
+        else if ((this->distanceLeftBack()-this->distanceLeftFront()) > 1.0) {
             motors.go (LEFT_MOTOR_FACTOR * 75,  RIGHT_MOTOR_FACTOR * 65);
         }
         else{
             motors.go (LEFT_MOTOR_FACTOR * 70,  RIGHT_MOTOR_FACTOR * 70);
         }
     }
-    else if (robot.distanceLeftFront() < 8.0 ) {
-            if ((robot.distanceLeftFront()-robot.distanceLeftBack()) < 0.0) {
+    else if (this->distanceLeftFront() < 8.0 ) {
+            if ((this->distanceLeftFront()-this->distanceLeftBack()) < 0.0) {
                 motors.go (LEFT_MOTOR_FACTOR * 80,  RIGHT_MOTOR_FACTOR * 50);
             }
-            else if ((robot.distanceLeftFront()-robot.distanceLeftBack()) > 2.0) {
+            else if ((this->distanceLeftFront()-this->distanceLeftBack()) > 2.0) {
                 motors.go (LEFT_MOTOR_FACTOR * 50,  RIGHT_MOTOR_FACTOR * 90);
             }
-            else if ((robot.distanceLeftFront()-robot.distanceLeftBack()) > 1.0) {
+            else if ((this->distanceLeftFront()-this->distanceLeftBack()) > 1.0) {
                 motors.go (LEFT_MOTOR_FACTOR * 60,  RIGHT_MOTOR_FACTOR * 80);
             }
             else{
@@ -972,15 +988,15 @@ void Robot::followLeftLidars (float startCompass) {
 void Robot::followIMU (float startHeading) {
     if (startHeading - this->compassHeading() > 2.0 ) {
         motors.go (LEFT_MOTOR_FACTOR * 65,  RIGHT_MOTOR_FACTOR * 70);
-        robot.pauza(10);
+        this->pauza(10);
     }
     else if (startHeading - this->compassHeading() < -2.0 ) {
         motors.go (LEFT_MOTOR_FACTOR * 70,  RIGHT_MOTOR_FACTOR * 65);
-        robot.pauza(10);
+        this->pauza(10);
     }
     else {
         motors.go (LEFT_MOTOR_FACTOR * 60,  RIGHT_MOTOR_FACTOR * 60);
-        robot.pauza(10);
+        this->pauza(10);
     }
 }
 
@@ -1002,7 +1018,7 @@ int Robot::crnosrebrnobijelo () {
 char Robot::colorDetection () {
     float red, green, blue, yellow, violet;
     dW(colRst,LOW);
-    robot.pauza(50);
+    this->pauza(50);
     if (state_tip1 == 0)
         return;
     red = this->colorRed();
@@ -1046,11 +1062,11 @@ void Robot::tileSignal (char Signal) {
     if (Signal=='B') {
         for(i=0; i<12; i++){
             dW(led1,HIGH);
-            robot.pauza(250);
+            this->pauza(250);
             if (state_tip1 == 0)
                 return;
             dW(led1,LOW);
-            robot.pauza(250);
+            this->pauza(250);
             if (state_tip1 == 0)
                 return;
         }
@@ -1058,11 +1074,11 @@ void Robot::tileSignal (char Signal) {
     else if (Signal=='R') {
         for(i=0; i<8; i++){
             dW(led2,HIGH);
-            robot.pauza(250);
+            this->pauza(250);
             if (state_tip1 == 0)
                 return;
             dW(led2,LOW);
-            robot.pauza(250);
+            this->pauza(250);
             if (state_tip1 == 0)
                 return;
         }
@@ -1070,11 +1086,11 @@ void Robot::tileSignal (char Signal) {
     else if (Signal=='G') {
         for(i=0; i<8; i++){
             dW(led3,HIGH);
-            robot.pauza(250);
+            this->pauza(250);
             if (state_tip1 == 0)
                 return;
             dW(led3,LOW);
-            robot.pauza(250);
+            this->pauza(250);
             if (state_tip1 == 0)
                 return;
         }
@@ -1094,25 +1110,25 @@ void Robot::turn90Degrees(bool isLeft = false) {
     bool heatedVictimDetected = false;
 //    float startingHeading = this->robotOrientationAngle;
 //    Serial.println("     ****** OKRET ZAPOCET  ********** ");
-//    if ((robot.distanceFrontMiddle() > 7) && (((robot.distanceBackLeft()+robot.distanceBackRight()) / 2) > 20)){
-//        while (robot.distanceFrontMiddle() < 6){
+//    if ((this->distanceFrontMiddle() > 7) && (((this->distanceBackLeft()+this->distanceBackRight()) / 2) > 20)){
+//        while (this->distanceFrontMiddle() < 6){
 //            motors.go(-50,-50);
 //        }
 //        motors.go(0,0);
 //    }
-    if ((robot.distanceFrontMiddle() < 10) && (((robot.distanceBackLeft()+robot.distanceBackRight()) / 2) < 10)){
-        while (robot.distanceFrontMiddle() < ((robot.distanceBackLeft()+robot.distanceBackRight()) / 2)){
+    if ((this->distanceFrontMiddle() < 10) && (((this->distanceBackLeft()+this->distanceBackRight()) / 2) < 10)){
+        while (this->distanceFrontMiddle() < ((this->distanceBackLeft()+this->distanceBackRight()) / 2)){
             motors.go(-50,-50);
         }
         motors.go(0,0);
     }
-    else if (robot.distanceFrontMiddle() < 7){
-        while (robot.distanceFrontMiddle() < 7){
+    else if (this->distanceFrontMiddle() < 7){
+        while (this->distanceFrontMiddle() < 7){
             motors.go(-50,-50);
         }
         motors.go(0,0);
     }
-    robot.pauza(250);
+    this->pauza(250);
     if (state_tip1 == 0)
         return;
     encoders.reset();
@@ -1122,19 +1138,19 @@ void Robot::turn90Degrees(bool isLeft = false) {
         float currentHeading = (startingHeading >= 270 && this->compassHeading() < 100) ? this->compassHeading() + 360 : this->compassHeading(); 
         degreesDiference = currentHeading - startingHeading;
         degreesDiferencePrevious = degreesDiference;
-        if ((robot.distanceRightFront() > 30) && (robot.distanceRightBack() < 20)) {
-            while (robot.distanceRightBack() < 30) {
+        if ((this->distanceRightFront() > 30) && (this->distanceRightBack() < 20)) {
+            while (this->distanceRightBack() < 30) {
                 motors.go(50,50);
-                robot.pauza(10);
+                this->pauza(10);
             }
-            robot.pauza(100);
+            this->pauza(100);
         }
         while (degreesDiference <= TURN_DEGREES) {
             if ((heatedVictimDetected == false) && (degreesDiference >= 45.0)) {
-                heatedVictimDetected = robot.checkHeatedVictim();
+                heatedVictimDetected = this->checkHeatedVictim();
             }
             motors.go(LEFT_MOTOR_FACTOR * 70,  RIGHT_MOTOR_FACTOR * -70);
-            robot.pauza(15);
+            this->pauza(15);
             if (state_tip1 == 0)
                 return;
             if((encoders.counter(0)+encoders.counter(1)) > 1200)
@@ -1148,21 +1164,21 @@ void Robot::turn90Degrees(bool isLeft = false) {
                 degreesDiferencePrevious = degreesDiference;
             }
         }    
-/*        if (robot.isWallLeft()){
-            if ((robot.distanceLeftFront() - robot.distanceLeftBack()) > 3){
-                while (((robot.distanceLeftFront() - robot.distanceLeftBack()) > 2)
+/*        if (this->isWallLeft()){
+            if ((this->distanceLeftFront() - this->distanceLeftBack()) > 3){
+                while (((this->distanceLeftFront() - this->distanceLeftBack()) > 2)
                         &&
-                        ((robot.distanceLeftBack() - robot.distanceLeftMiddle()) > 1)){
+                        ((this->distanceLeftMiddle() - this->distanceLeftBack()) > 1)){
                     motors.go(LEFT_MOTOR_FACTOR * -45,  RIGHT_MOTOR_FACTOR * 45);
-                    robot.pauza(1);
+                    this->pauza(1);
                 }
             }
-            else if ((robot.distanceLeftBack() - robot.distanceLeftFront()) > 3){
-                while (((robot.distanceLeftBack() - robot.distanceLeftFront()) > 2)
+            else if ((this->distanceLeftBack() - this->distanceLeftFront()) > 3){
+                while (((this->distanceLeftBack() - this->distanceLeftFront()) > 2)
                         &&
-                        ((robot.distanceLeftMiddle() - robot.distanceLeftBack()) > 1)){
+                        ((this->distanceLeftBack() - this->distanceLeftMiddle()) > 1)){
                     motors.go(LEFT_MOTOR_FACTOR * 50,  RIGHT_MOTOR_FACTOR * -50);
-                    robot.pauza(1);
+                    this->pauza(1);
                 }
             }
         }     
@@ -1172,19 +1188,19 @@ void Robot::turn90Degrees(bool isLeft = false) {
         float currentHeading = (startingHeading <= 90 && this->compassHeading() > 260) ? this->compassHeading() - 360 : this->compassHeading();
         degreesDiference = startingHeading - currentHeading;
         degreesDiferencePrevious = degreesDiference;
-        if ((robot.distanceLeftBack() < 20) && (robot.distanceLeftFront() > 30)) {
-            while (robot.distanceLeftBack() < 30) {
+        if ((this->distanceLeftBack() < 20) && (this->distanceLeftFront() > 30)) {
+            while (this->distanceLeftBack() < 30) {
                 motors.go(50,50);
-                robot.pauza(10);
+                this->pauza(10);
             }
-            robot.pauza(100);
+            this->pauza(100);
         }
         while (degreesDiference <= TURN_DEGREES) {
             if ((heatedVictimDetected == false) && (degreesDiference >= 45.0)) {
-                heatedVictimDetected = robot.checkHeatedVictim();
+                heatedVictimDetected = this->checkHeatedVictim();
             }
             motors.go(LEFT_MOTOR_FACTOR * -65,  RIGHT_MOTOR_FACTOR * 65);
-            robot.pauza(15);
+            this->pauza(15);
             if (state_tip1 == 0)
                 return;
             if((encoders.counter(0)+encoders.counter(1)) > 1200)
@@ -1198,35 +1214,35 @@ void Robot::turn90Degrees(bool isLeft = false) {
                 degreesDiferencePrevious = degreesDiference;
             }
         }     
-/*        if (robot.isWallRight()){
-            if ((robot.distanceRightBack() - robot.distanceRightFront()) > 3){
-                while (((robot.distanceRightBack() - robot.distanceRightFront()) > 2)
+/*        if (this->isWallRight()){
+            if ((this->distanceRightBack() - this->distanceRightFront()) > 3){
+                while (((this->distanceRightBack() - this->distanceRightFront()) > 2)
                         &&
-                        ((robot.distanceRightBack() - robot.distanceRightMiddle()) > 1)){
+                        ((this->distanceRightBack() - this->distanceRightMiddle()) > 1)){
                     motors.go(LEFT_MOTOR_FACTOR * -45,  RIGHT_MOTOR_FACTOR * 45);
-                    robot.pauza(1);
+                    this->pauza(1);
                 }
             }
-            else if ((robot.distanceRightFront() - robot.distanceRightBack()) > 3){
-                while (((robot.distanceRightFront() - robot.distanceRightBack()) > 2)
+            else if ((this->distanceRightFront() - this->distanceRightBack()) > 3){
+                while (((this->distanceRightFront() - this->distanceRightBack()) > 2)
                         &&
-                        ((robot.distanceRightMiddle() - robot.distanceRightBack()) > 1)){
+                        ((this->distanceRightMiddle() - this->distanceRightBack()) > 1)){
                     motors.go(LEFT_MOTOR_FACTOR * 50,  RIGHT_MOTOR_FACTOR * -50);
-                    robot.pauza(1);
+                    this->pauza(1);
                 }
             }
         }     
 */
     }
     motors.go(0,0);
-    robot.pauza(250);
+    this->pauza(250);
     if (state_tip1 == 0)
         return;
-    if (((robot.distanceBackLeft() + robot.distanceBackRight())/2) < 9){
-        while (((robot.distanceBackLeft() + robot.distanceBackRight())/2) < 8){
-            if (robot.distanceBackLeft() > robot.distanceBackRight())
+    if (((this->distanceBackLeft() + this->distanceBackRight())/2) < 9){
+        while (((this->distanceBackLeft() + this->distanceBackRight())/2) < 8){
+            if (this->distanceBackLeft() > this->distanceBackRight())
                 motors.go(45,60);
-            else if (robot.distanceBackLeft() < robot.distanceBackRight())
+            else if (this->distanceBackLeft() < this->distanceBackRight())
                 motors.go(60,45);
             else
                 motors.go(50,50);
@@ -1234,7 +1250,7 @@ void Robot::turn90Degrees(bool isLeft = false) {
         motors.go(0,0);
     }
     motors.go(0,0);
-    robot.pauza(250);
+    this->pauza(250);
     if (state_tip1 == 0)
         return;
 //    Serial.println("     ****** OKRET ZAVRSEN  ********** ");
@@ -1245,7 +1261,7 @@ void Robot::turn90Degrees(bool isLeft = false) {
 bool Robot::isWallFront () {
     int leftSensor = dR(dgIRL);
     int rightSensor = dR(dgIRD);
-//    if (robot.distanceFrontMiddle()<=15 && (robot.distanceFrontLeft()<=15 || robot.distanceFrontRight()<=15)) {
+//    if (this->distanceFrontMiddle()<=15 && (this->distanceFrontLeft()<=15 || this->distanceFrontRight()<=15)) {
     if ((leftSensor == 0) && (rightSensor == 0)) {
         return true; }
     else {
@@ -1253,7 +1269,7 @@ bool Robot::isWallFront () {
 }
 
 bool Robot::isWallFrontNear () {
-    if (robot.distanceFrontMiddle() < 6 && (robot.distanceFrontLeft() < 6 || robot.distanceFrontRight() < 6)) {
+    if (this->distanceFrontMiddle() < 6 && (this->distanceFrontLeft() < 6 || this->distanceFrontRight() < 6)) {
         return true; }
     else {
         return false; }
@@ -1262,27 +1278,27 @@ bool Robot::isWallFrontNear () {
 float Robot::WallFrontDistance () {
     float distF;
 
-    distF = robot.distanceFrontMiddle() + robot.distanceFrontLeft() + robot.distanceFrontRight();
+    distF = this->distanceFrontMiddle() + this->distanceFrontLeft() + this->distanceFrontRight();
     distF = distF / 3.0;
     return distF;
 }
 
 bool Robot::isWallBack () {
-    if (robot.distanceBackLeft()<=15 && robot.distanceBackRight()<=15) {
+    if (this->distanceBackLeft()<=15 && this->distanceBackRight()<=15) {
         return true; }
     else {
         return false; }
 }
 
 bool Robot::isWallLeft () {
-    if (robot.distanceLeftMiddle()<=30 && (robot.distanceLeftFront()<=30 || robot.distanceLeftBack()<=30)) {
+    if (this->distanceLeftMiddle()<=20 && (this->distanceLeftFront()<=20 || this->distanceLeftBack()<=20)) {
         return true; }
     else {
         return false; }
 }
 
 bool Robot::isWallRight() {
-    if (robot.distanceRightMiddle()<=30 && (robot.distanceRightFront()<=30 || robot.distanceRightBack()<=30)) {
+    if (this->distanceRightMiddle()<=20 && (this->distanceRightFront()<=20 || this->distanceRightBack()<=20)) {
         return true; }
     else {
         return false; }
@@ -1292,53 +1308,54 @@ void Robot::program () {
     int retState;
     int i;
     if (state_tip1 == 0) {
-        robot.stop();
-//        delay(2000);
-//        testCompass();
-//        Serial.print(strpit);
-//        Serial.print("   Razlika: ");
-//        Serial.println(robot.compassPitch()*(-1)-strpit);
-//        robot.testSensors();       
-//        testLidarsRead();
-//        testLidarsRead10();
-//        testLidars();
-//        testIRDistSensors();
-//        testColor();
-//        testIRLineSensors();
-//        testThermal(); 
-
-/*        motors.go(50,50);
-        robot.pauza(1000);
-
-        motors.go(0,0);
-        robot.pauza(1000);
-        robot.turn90Degrees(false);
-        Serial.print(encoders.counter(0));
-        Serial.print("   ");
-        Serial.println(encoders.counter(1));
-        robot.pauza(10000);
-        robot.turn90Degrees(true);
-        Serial.print(encoders.counter(0));
-        Serial.print("   ");
-        Serial.println(encoders.counter(1));
-        robot.pauza(10000);
-*/      dW(led1,LOW);
-        dW(led2,LOW);
-        dW(led3,LOW);
-
+        if (state_tip2 == 1) {
+            this->testSensors();
+        }
+        else{
+            this->stop();
+//            delay(2000);
+//            testCompass();
+//            Serial.print(strpit);
+//            Serial.print("   Razlika: ");
+//            Serial.println(this->compassPitch()*(-1)-strpit);
+//            this->testSensors();       
+//            testLidarsRead();
+//            testLidarsRead10();
+//            testLidars();
+//            testIRDistSensors();
+//            testColor();
+//            testIRLineSensors();
+//            testThermal(); 
+/*
+            motors.go(50,50);
+            this->pauza(1000);
+            motors.go(0,0);
+            this->pauza(1000);
+            this->turn90Degrees(false);
+            Serial.print(encoders.counter(0));
+            Serial.print("   ");
+            Serial.println(encoders.counter(1));
+            this->pauza(10000);
+            this->turn90Degrees(true);
+            Serial.print(encoders.counter(0));
+            Serial.print("   ");
+            Serial.println(encoders.counter(1));
+            this->pauza(10000);
+*/
+        }
     }
     else {
-        if (!robot.isWallRight()){
-            robot.turn90Degrees();
-            robot.goAheadOneTile();
+        if (!this->isWallRight()){
+            this->turn90Degrees();
+            this->goAheadOneTile();
             if (state_tip1 == 0)
                 return;
         }
-        else if (robot.isWallFront()){
-            robot.turn90Degrees(true);
+        else if (this->isWallFront()){
+            this->turn90Degrees(true);
         }
         else {
-            robot.goAheadOneTile();
+            this->goAheadOneTile();
             if (state_tip1 == 0)
                 return;
         }
