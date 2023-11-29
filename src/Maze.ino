@@ -878,7 +878,7 @@ void Robot::followRightLidars (float startCompass) {
     else if (robot.distanceLeftMiddle()<5){
         motors.go (LEFT_MOTOR_FACTOR * 90,  RIGHT_MOTOR_FACTOR * 50);
     }
-    else if (robot.distanceRightFront() > 11.0) {
+    else if (robot.distanceRightFront() > 10.0) {
         if ((robot.distanceRightBack()-robot.distanceRightFront()) < 0.0) {
             motors.go (LEFT_MOTOR_FACTOR * 80,  RIGHT_MOTOR_FACTOR * 50);
         }
@@ -892,8 +892,8 @@ void Robot::followRightLidars (float startCompass) {
             motors.go (LEFT_MOTOR_FACTOR * 70,  RIGHT_MOTOR_FACTOR * 70);
         }
     }
-    else if (robot.distanceRightFront() < 9.0 ) {
-            if (robot.distanceRightMiddle() < 8.0) {
+    else if (robot.distanceRightFront() < 8.0 ) {
+            if (robot.distanceRightMiddle() < 6.0) {
                 motors.go (LEFT_MOTOR_FACTOR * 50,  RIGHT_MOTOR_FACTOR * 80);
             }
             else if ((robot.distanceRightFront()-robot.distanceRightBack()) < 0.0) {
@@ -921,7 +921,7 @@ void Robot::followLeftLidars (float startCompass) {
         else
             robot.followIMU(startCompass);
     }
-    else if (robot.distanceLeftFront() > 11.0) {
+    else if (robot.distanceLeftFront() > 10.0) {
         if ((robot.distanceLeftBack()-robot.distanceLeftFront()) < 0.0) {
             motors.go (LEFT_MOTOR_FACTOR * 50,  RIGHT_MOTOR_FACTOR * 80);
         }
@@ -935,7 +935,7 @@ void Robot::followLeftLidars (float startCompass) {
             motors.go (LEFT_MOTOR_FACTOR * 70,  RIGHT_MOTOR_FACTOR * 70);
         }
     }
-    else if (robot.distanceLeftFront() < 9.0 ) {
+    else if (robot.distanceLeftFront() < 8.0 ) {
             if ((robot.distanceLeftFront()-robot.distanceLeftBack()) < 0.0) {
                 motors.go (LEFT_MOTOR_FACTOR * 80,  RIGHT_MOTOR_FACTOR * 50);
             }
