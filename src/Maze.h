@@ -1,6 +1,6 @@
 enum Orientation {ORIENTATION_UP, ORIENTATION_RIGHT, ORIENTATION_DOWN, ORIENTATION_LEFT, UNKNOWN_ORIENTATION};
 
-#define napon 3    // 1-puna baterija  2-srednje puna baterija   3-prosječna vrijednost
+#define napon 4    // 1-puna baterija  2-srednje puna baterija   3-prosječna vrijednost   4-stabilizirani napon 9V
 #define arena 2    // 1-fiksna arena   2-mobilna arena  
 
 //Definicije nekih kratica u programu
@@ -12,11 +12,11 @@ enum Orientation {ORIENTATION_UP, ORIENTATION_RIGHT, ORIENTATION_DOWN, ORIENTATI
 
 
 //Definicije karakteristika vezanih uz motore
-#define TURN_DEGREES 87.0
+#define TURN_DEGREES 86.0
 #define TILE_LENGTH 30
 #define LEFT_MOTOR_FACTOR 0.90
 #define RIGHT_MOTOR_FACTOR 1.00
-#define DIFFERENCE_PITCH 10
+#define DIFFERENCE_PITCH 5
 
 
 // arena
@@ -47,6 +47,15 @@ enum Orientation {ORIENTATION_UP, ORIENTATION_RIGHT, ORIENTATION_DOWN, ORIENTATI
     #define WHITE_MIDLE 650    // >
     #define WHITE_RIGHT 450    // <
 #endif
+#if ((arena == 1) && (napon == 4))
+    #define ONE_TILE_ENCODER_STEPS 1070
+    #define BLACK_MIDLE 200    // <
+    #define BLACK_RIGHT 200    // <
+    #define SILVER_MIDLE 650   // >
+    #define SILVER_RIGHT 650   // >
+    #define WHITE_MIDLE 650    // >
+    #define WHITE_RIGHT 450    // <
+#endif
 
 // mobilne ploce
 #if ((arena == 2) && (napon == 1))
@@ -69,6 +78,15 @@ enum Orientation {ORIENTATION_UP, ORIENTATION_RIGHT, ORIENTATION_DOWN, ORIENTATI
 #endif
 #if ((arena == 2) && (napon == 3))
     #define ONE_TILE_ENCODER_STEPS 1040
+    #define BLACK_MIDLE 350    // <
+    #define BLACK_RIGHT 250    // <
+    #define SILVER_MIDLE 625   // >
+    #define SILVER_RIGHT 625   // >
+    #define WHITE_MIDLE 600    // >
+    #define WHITE_RIGHT 450    // <
+#endif
+#if ((arena == 2) && (napon == 4))
+    #define ONE_TILE_ENCODER_STEPS 1000
     #define BLACK_MIDLE 350    // <
     #define BLACK_RIGHT 250    // <
     #define SILVER_MIDLE 625   // >
@@ -147,7 +165,8 @@ enum Orientation {ORIENTATION_UP, ORIENTATION_RIGHT, ORIENTATION_DOWN, ORIENTATI
     #define BACK_RIGHT_ANG2 2.542
     #define BACK_RIGHT_MOV2 -243
 
-    #define FRONT_NEAR_DISTANCE 5.0
+    #define FRONT_NEAR_DISTANCE 9.0
+    #define THERMAL_LEVEL 400
 #endif
 
 //napon ispod 12.1V
@@ -219,7 +238,8 @@ enum Orientation {ORIENTATION_UP, ORIENTATION_RIGHT, ORIENTATION_DOWN, ORIENTATI
     #define BACK_RIGHT_ANG2 2.57
     #define BACK_RIGHT_MOV2 -320
 
-    #define FRONT_NEAR_DISTANCE 5.0
+    #define FRONT_NEAR_DISTANCE 9.0
+    #define THERMAL_LEVEL 400
 #endif
 
 // prosječne vrijednosti napona
@@ -291,7 +311,81 @@ enum Orientation {ORIENTATION_UP, ORIENTATION_RIGHT, ORIENTATION_DOWN, ORIENTATI
     #define BACK_RIGHT_ANG2 2.556
     #define BACK_RIGHT_MOV2 -281
 
-    #define FRONT_NEAR_DISTANCE 5.0
+    #define FRONT_NEAR_DISTANCE 9.0
+    #define THERMAL_LEVEL 400
+#endif
+
+// stabilizirani napon 11.5V
+#if napon == 4
+    //front left
+    #define FRONT_LEFT_ANG1 2.124
+    #define FRONT_LEFT_MOV1 -70
+    #define FRONT_LEFT_LB 175
+    #define FRONT_LEFT_ANG2 2.321
+    #define FRONT_LEFT_MOV2 -104
+    //front middle
+    #define FRONT_MIDDLE_ANG1 2.086
+    #define FRONT_MIDDLE_MOV1 -110
+    #define FRONT_MIDDLE_LB 200
+    #define FRONT_MIDDLE_ANG2 2.175
+    #define FRONT_MIDDLE_MOV2 -128
+    //front right
+    #define FRONT_RIGHT_ANG1 2.206
+    #define FRONT_RIGHT_MOV1 -116
+    #define FRONT_RIGHT_LB 190
+    #define FRONT_RIGHT_ANG2 2.138
+    #define FRONT_RIGHT_MOV2 -103
+    //left front
+    #define LEFT_FRONT_ANG1 2.113
+    #define LEFT_FRONT_MOV1 -72
+    #define LEFT_FRONT_LB 180
+    #define LEFT_FRONT_ANG2 2.44
+    #define LEFT_FRONT_MOV2 -130
+    //left middle
+    #define LEFT_MIDDLE_ANG1 2.18
+    #define LEFT_MIDDLE_MOV1 -76
+    #define LEFT_MIDDLE_LB 175
+    #define LEFT_MIDDLE_ANG2 2.059
+    #define LEFT_MIDDLE_MOV2 -55
+    //left back
+    #define LEFT_BACK_ANG1 2.112
+    #define LEFT_BACK_MOV1 -65
+    #define LEFT_BACK_LB 175
+    #define LEFT_BACK_ANG2 2.334
+    #define LEFT_BACK_MOV2 -103
+    //right front
+    #define RIGHT_FRONT_ANG1 2.37
+    #define RIGHT_FRONT_MOV1 -128
+    #define RIGHT_FRONT_LB 185
+    #define RIGHT_FRONT_ANG2 2.37
+    #define RIGHT_FRONT_MOV2 -128
+    //right middle
+    #define RIGHT_MIDDLE_ANG1 2.08
+    #define RIGHT_MIDDLE_MOV1 -112
+    #define RIGHT_MIDDLE_LB 200
+    #define RIGHT_MIDDLE_ANG2 2.328
+    #define RIGHT_MIDDLE_MOV2 -161
+    //right back
+    #define RIGHT_BACK_ANG1 2.021
+    #define RIGHT_BACK_MOV1 -97
+    #define RIGHT_BACK_LB 200
+    #define RIGHT_BACK_ANG2 2.227
+    #define RIGHT_BACK_MOV2 -137
+    //back left
+    #define BACK_LEFT_ANG1 2.173
+    #define BACK_LEFT_MOV1 -127
+    #define BACK_LEFT_LB 200
+    #define BACK_LEFT_ANG2 2.173
+    #define BACK_LEFT_MOV2 -127
+    //back right
+    #define BACK_RIGHT_ANG1 2.152
+    #define BACK_RIGHT_MOV1 -113
+    #define BACK_RIGHT_LB 195
+    #define BACK_RIGHT_ANG2 2.425
+    #define BACK_RIGHT_MOV2 -165
+
+    #define FRONT_NEAR_DISTANCE 6.0
+    #define THERMAL_LEVEL 400.0
 #endif
 
 /*
@@ -575,6 +669,7 @@ class Robot {
         void setRobotOrientation(Orientation newOrientation);
         enum State {SUSPEND, GO_AHEAD_1_TILE, TURN_LEFT, TURN_RIGHT, DECIDE_AND_SEARCH_VICTIMS};
 
+        void program();
         float distanceFrontLeft();
         float distanceFrontMiddle();
         float distanceFrontRight();
@@ -601,10 +696,11 @@ class Robot {
         void followRightLidars(float startCompass);
         void followLeftLidars(float startCompass);
         void blackTileBack();
-        State getState();
+//        State getState();
         void setState(State state);
         int crnosrebrnobijelo ();
         void pauza (int duljina);
+        bool checkHeatedVictim();
         char colorDetection(); 
         float colorRed();
         float colorOrange();
@@ -620,7 +716,7 @@ class Robot {
         float currentTemperatureR ();
         float compassPitch();
         void slopeUp();
-        void slopeDown();
+//        void slopeDown();
 
         void testSensors();
 
